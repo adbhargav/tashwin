@@ -10,7 +10,10 @@ export async function api(path, { method = 'GET', body, form } = {}) {
     headers: { ...(token && { Authorization: `Bearer ${token}` }), ...(body && { 'Content-Type': 'application/json' }) },
     body: form || (body && JSON.stringify(body)),
   });
-  const data = await res.json().catch(() => ({}));
+  const data = await res.json().catch(() => null);
+  // Not JSON means the request never reached the API (e.g. the site host answered with its own page because
+  // VITE_API_URL is not set), so fail instead of handing the page an empty object.
+  if (data === null) throw new Error(res.ok ? 'The server could not be reached. Please try again shortly.' : 'Something went wrong');
   if (!res.ok) throw new Error(data.error || 'Something went wrong');
   return data;
 }
