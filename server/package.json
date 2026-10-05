@@ -10,6 +10,7 @@
     "seed": "node src/seed.js",
     "seed:admin": "node src/seed-admin.js"
   },
+  
   "keywords": [],
   "author": "",
   "license": "ISC",
