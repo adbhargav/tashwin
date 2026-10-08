@@ -28,7 +28,7 @@ echo "==> Database and user"
 if [ -f "$CRED_FILE" ]; then
   DB_PASS=$(grep -oE 'password=.*' "$CRED_FILE" | cut -d= -f2-)
 else
-  DB_PASS=$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 28)
+  DB_PASS=$(openssl rand -hex 14)
   printf 'database=%s\nuser=%s\npassword=%s\n' "$DB_NAME" "$DB_USER" "$DB_PASS" > "$CRED_FILE"
   chmod 600 "$CRED_FILE"
 fi
