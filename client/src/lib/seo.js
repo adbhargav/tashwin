@@ -91,7 +91,7 @@ export const productLd = (p) => ({
 });
 
 export const organizationLd = () => [
-  { '@context': 'https://schema.org', '@type': 'Organization', name: SITE.name, url: location.origin, logo: `${location.origin}/logo.png`, email: SITE.email, telephone: SITE.phone },
+  { '@context': 'https://schema.org', '@type': 'Organization', name: SITE.name, url: location.origin, logo: `${location.origin}/logo.png`, email: SITE.email, telephone: SITE.phone, sameAs: Object.values(SITE.social || {}) },
   { '@context': 'https://schema.org', '@type': 'WebSite', name: SITE.name, url: location.origin,
     potentialAction: { '@type': 'SearchAction', target: `${location.origin}/search?q={search_term_string}`, 'query-input': 'required name=search_term_string' } },
 ];

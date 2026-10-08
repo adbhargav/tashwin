@@ -100,7 +100,14 @@ export default function Product() {
               {p.mrp > p.price && <del className="text-base">{inr(p.mrp)}</del>}
               {p.discount > 0 && <span className="text-base font-medium text-brand">{p.discount}% off</span>}
             </div>
-            <p className="text-xs mt-1">{p.dealer_pricing && <span className="font-medium text-brand">Dealer price · </span>}Inclusive of all taxes</p>
+            {p.dealer_pricing && (
+              <div className="inline-flex flex-wrap items-center gap-x-3 gap-y-1 mt-2 rounded-lg bg-brand/10 px-3 py-2 text-sm">
+                <span className="font-medium text-brand">Your dealer price</span>
+                <span className="text-ink">Retail {inr(p.retail_price)}</span>
+                {p.retail_price > p.price && <span className="text-green-700 font-medium">You save {inr(p.retail_price - p.price)} ({Math.round((p.retail_price - p.price) * 100 / p.retail_price)}%)</span>}
+              </div>
+            )}
+            <p className="text-xs mt-1">Inclusive of all taxes</p>
 
             <div className="flex items-center gap-3 bg-soft rounded-lg px-4 py-3 mt-6">
               <Truck size={22} strokeWidth={1.4} className="text-ink" />

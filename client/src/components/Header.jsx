@@ -1,9 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
-import {
-  Archive, Armchair, BedDouble, Briefcase, ChevronDown, Headphones, Heart, Lamp, Menu, Phone, Search, ShoppingBag,
-  Sofa, Table2, Truck, User, Utensils, X,
-} from 'lucide-react';
+import { Archive, Armchair, BedDouble, Briefcase, ChevronDown, Headphones, Heart, Lamp, Menu, Phone, Search, ShoppingBag, Sofa, Table2, Truck, User, Utensils, X } from 'lucide-react';
 import { useShop } from '../context/Shop';
 import { useAuth } from '../context/Auth';
 import { asset } from '../lib/api';
@@ -14,6 +11,7 @@ const PILLS = [
   { to: '/offers', label: 'Offers' },
   { to: '/search?sort=new', label: 'New Arrivals' },
   { to: '/c/office', label: 'Workspaces' },
+  { to: '/projects', label: 'Projects' },
 ];
 
 const ICONS = [[/sofa/i, Sofa], [/chair|seating/i, Armchair], [/bed|mattress/i, BedDouble], [/dining/i, Utensils], [/table|desk/i, Table2],
@@ -74,11 +72,15 @@ function SearchBox({ onDone }) {
   );
 }
 
+const NAV_MAX = 7;
+
 export default function Header() {
   const { tree, cartCount, wishIds } = useShop();
   const { user } = useAuth();
   const location = useLocation();
   const [open, setOpen] = useState(null);
+  // Departments ticked “Show in navbar” in the admin panel; beyond NAV_MAX they move under a “More” menu so the bar never overflows.
+  const navDepts = tree.filter((d) => d.show_in_nav);
   const [drawer, setDrawer] = useState(false);
   const [expanded, setExpanded] = useState(null);
 
@@ -109,13 +111,25 @@ export default function Header() {
         </div>
         <div className="relative z-10 bg-white h-[50px] flex justify-between px-[30px] shadow-[0_2px_6px_rgba(0,0,0,0.16)]">
           <nav className="flex items-center">
-            {tree.filter((d) => d.show_in_nav).map((dept) => (
+            {navDepts.slice(0, NAV_MAX).map((dept) => (
               <div key={dept.id} className={`menu-l1 h-[50px] mr-4 ${open === dept.id ? 'open' : ''}`}
                 onMouseEnter={() => setOpen(dept.id)} onMouseLeave={() => setOpen(null)}>
                 <Link to={`/c/${dept.slug}`} className="menu-l1-link">{dept.name}</Link>
                 {dept.children.length > 0 && <MegaMenu dept={dept} close={() => setOpen(null)} />}
               </div>
             ))}
+            {navDepts.length > NAV_MAX && (
+              <div className={`menu-l1 relative h-[50px] mr-4 ${open === 'more' ? 'open' : ''}`} onMouseEnter={() => setOpen('more')} onMouseLeave={() => setOpen(null)}>
+                <button type="button" className="menu-l1-link inline-flex items-center gap-1">More <ChevronDown size={14} className={`transition-transform ${open === 'more' ? 'rotate-180' : ''}`} /></button>
+                {open === 'more' && (
+                  <div className="absolute left-0 top-full z-20 min-w-[220px] bg-white rounded-b-lg shadow-[0_6px_9px_rgba(0,0,0,0.16)] py-2">
+                    {navDepts.slice(NAV_MAX).map((dept) => (
+                      <Link key={dept.id} to={`/c/${dept.slug}`} onClick={() => setOpen(null)} className="mega-link !px-5 !py-2.5 hover:!px-5">{dept.name}</Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
             <NavLink to="/offers" className="menu-l1-link !text-brand">Offers</NavLink>
           </nav>
           <div className="flex items-center gap-1">
@@ -146,7 +160,7 @@ export default function Header() {
             </div>
             <SearchBox onDone={() => setDrawer(false)} />
             <nav className="mt-4">
-              {tree.filter((d) => d.show_in_nav).map((dept) => (
+              {navDepts.map((dept) => (
                 <div key={dept.id} className="border-b border-line">
                   <button onClick={() => setExpanded(expanded === dept.id ? null : dept.id)}
                     className="w-full flex items-center justify-between py-3.5 text-[15px] font-medium text-ink">

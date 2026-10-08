@@ -50,7 +50,7 @@ export default function ProductCard({ product: p, compact = false }) {
             <span className={`font-medium text-ink ${compact ? 'text-[17px]' : 'text-xl leading-[25px]'}`}>{inr(p.price)}</span>
           </div>
           {p.mrp > p.price && <del className={compact ? 'text-sm' : 'text-base leading-[22px]'}>{inr(p.mrp)}</del>}
-          {p.dealer_pricing && <p className="text-xs font-medium text-brand">Dealer price</p>}
+          {p.dealer_pricing && <p className="text-xs"><span className="font-medium text-brand">Dealer price</span>{p.retail_price > p.price && <span className="text-body"> · retail {inr(p.retail_price)}</span>}</p>}
         </div>
       </div>
       {!compact && images.length > 1 && (

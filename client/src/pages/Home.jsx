@@ -5,6 +5,7 @@ import { api, asset } from '../lib/api';
 import { SITE } from '../lib/site';
 import Slider from '../components/Slider';
 import ProductCard from '../components/ProductCard';
+import { ProjectCard } from './Projects';
 import { organizationLd, useSeo } from '../lib/seo';
 
 const POLICIES = [
@@ -86,7 +87,7 @@ export default function Home() {
   useSeo({ home: true, jsonLd: organizationLd() });
   const [data, setData] = useState(null);
   const [tab, setTab] = useState('bestSellers');
-  useEffect(() => { api('/api/home').then(setData).catch(() => setData({ banners: [], popular: [], offers: [], bestSellers: [], newArrivals: [] })); }, []);
+  useEffect(() => { api('/api/home').then(setData).catch(() => setData({ banners: [], popular: [], offers: [], projects: [], bestSellers: [], newArrivals: [] })); }, []);
   if (!data) return <div className="min-h-[70vh]" />;
   const by = (placement) => data.banners.filter((b) => b.placement === placement);
   const products = data[tab];
@@ -121,6 +122,15 @@ export default function Home() {
               </Link>
             ))}
           </div>
+        </section>
+      )}
+
+      {data.projects?.length > 0 && (
+        <section className="px-4 md:px-[50px] mt-[25px]">
+          <h2 className="heading mb-2">Our Projects</h2>
+          <p className="text-center text-base mb-8">Offices, homes and showrooms we have furnished end to end.</p>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">{data.projects.map((p) => <ProjectCard key={p.id} p={p} />)}</div>
+          <p className="text-center mt-8"><Link to="/projects" className="btn btn-outline">See all projects</Link></p>
         </section>
       )}
 

@@ -35,7 +35,7 @@ export default function Login() {
       if (mode === 'signin') return auth.login(form.email, form.password);
       if (mode === 'signup') return auth.signup(form.name, form.email, form.password);
       await auth.resetPassword(form.email);
-      setNotice('Password reset link sent — please check your email.');
+      setNotice('If an account exists for that email, a reset link is on its way — please check your inbox and spam folder.');
     });
   };
   const input = (key, label, type = 'text', extra = {}) => (

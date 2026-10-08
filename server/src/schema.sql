@@ -68,6 +68,11 @@ CREATE TABLE IF NOT EXISTS offers (
   sort_order INT NOT NULL DEFAULT 0,
   active BOOLEAN NOT NULL DEFAULT true
 );
+-- Offer page header and hand-picked products. With product_ids set the page lists exactly those products;
+-- otherwise it falls back to the rule (min_discount within category_id).
+ALTER TABLE offers ADD COLUMN IF NOT EXISTS banner_image TEXT DEFAULT '';
+ALTER TABLE offers ADD COLUMN IF NOT EXISTS description TEXT DEFAULT '';
+ALTER TABLE offers ADD COLUMN IF NOT EXISTS product_ids JSONB NOT NULL DEFAULT '[]';
 ALTER TABLE offers ADD COLUMN IF NOT EXISTS seo_title TEXT DEFAULT '';
 ALTER TABLE offers ADD COLUMN IF NOT EXISTS seo_description TEXT DEFAULT '';
 
@@ -75,6 +80,28 @@ ALTER TABLE offers ADD COLUMN IF NOT EXISTS seo_description TEXT DEFAULT '';
 CREATE TABLE IF NOT EXISTS settings (
   key TEXT PRIMARY KEY,
   value JSONB NOT NULL DEFAULT '{}'
+);
+
+-- Completed work shown on the "Our Projects" page: offices, homes, showrooms fitted out by the business.
+CREATE TABLE IF NOT EXISTS projects (
+  id SERIAL PRIMARY KEY,
+  title TEXT NOT NULL,
+  slug TEXT UNIQUE NOT NULL,
+  category TEXT NOT NULL DEFAULT 'Office',
+  client TEXT DEFAULT '',
+  location TEXT DEFAULT '',
+  completed_on TEXT DEFAULT '',
+  summary TEXT DEFAULT '',
+  description TEXT DEFAULT '',
+  cover_image TEXT DEFAULT '',
+  images JSONB NOT NULL DEFAULT '[]',
+  video TEXT DEFAULT '',
+  featured BOOLEAN NOT NULL DEFAULT false,
+  sort_order INT NOT NULL DEFAULT 0,
+  active BOOLEAN NOT NULL DEFAULT true,
+  seo_title TEXT DEFAULT '',
+  seo_description TEXT DEFAULT '',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
 -- placement: 'strip' (promo strip under navbar), 'hero' (big slider at the top of the home page), 'gallery' (real-life squares)

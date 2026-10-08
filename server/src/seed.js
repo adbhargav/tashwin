@@ -73,8 +73,9 @@ for (const [d, [dept, deptKind, groups]] of TREE.entries()) {
         const photos = PHOTOS[kind];
         const item = leaf.replace(/s$/, '').replace(/Sofa$/, 'Sofa');
         await q(
-          `INSERT INTO products (category_id, name, subtitle, slug, description, price, mrp, images, tag, material, color, dimensions, care, warranty, stock, featured)
-           VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)`,
+          // Dealers pay 12% under the selling price, rounded to the nearest hundred.
+          `INSERT INTO products (category_id, name, subtitle, slug, description, price, mrp, images, tag, material, color, dimensions, care, warranty, stock, featured, dealer_price)
+           VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16, round($6 * 0.88 / 100) * 100)`,
           [leafRow.id, name, `${material} ${item} in ${color}`, slugify(`${name} ${material} ${item} ${color} ${n}`),
             `${name} pairs clean, contemporary lines with everyday comfort. Built on a seasoned frame and finished in ${color.toLowerCase()} ${material.toLowerCase()}, it is made to anchor the room for years.`,
             Math.round((mrp * (100 - off)) / 10000) * 100, mrp,

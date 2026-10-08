@@ -32,7 +32,7 @@ const layout = (title, body) => `<!doctype html><html><body style="margin:0;back
 ${body}
 </td></tr>
 <tr><td style="padding:18px 32px;background:#222;color:#bbb;font-size:12px;line-height:18px;" align="center">
-${esc(SITE.name)} · ${esc(SITE.tagline)}<br>${esc(SITE.phone)} · ${esc(SITE.email)}<br>${esc(SITE.address)}
+${esc(SITE.name)} · ${esc(SITE.tagline)}<br>${esc(SITE.phone)} · ${esc(SITE.email)}<br>${esc(SITE.address)}<br><a href="${SITE.social.instagram}" style="color:#ddd;">Instagram</a> · <a href="${SITE.social.facebook}" style="color:#ddd;">Facebook</a> · <a href="${SITE.url}/privacy-policy" style="color:#ddd;">Privacy</a> · <a href="${SITE.url}/terms-and-conditions" style="color:#ddd;">Terms</a>
 </td></tr></table></td></tr></table></body></html>`;
 
 const button = (href, label) => `<p style="margin:24px 0 8px;"><a href="${href}" style="display:inline-block;background:${BRAND};color:#ffffff;text-decoration:none;font-weight:600;padding:13px 28px;border-radius:50px;">${esc(label)}</a></p>`;
@@ -87,6 +87,10 @@ const STATUS_COPY = {
 };
 
 export const mail = {
+  passwordReset: (email, link, name) => send(email, `Reset your ${SITE.name} password`,
+    `<p>Hi ${esc(name || 'there')},</p><p>We received a request to reset the password for your ${esc(SITE.name)} account (${esc(email)}). Click the button below to choose a new password. The link works once and expires in an hour.</p>
+     ${button(link, 'Reset Password')}<p style="color:#707070;font-size:13px;">If you did not ask for this, you can ignore this email — your password will not change.</p>`),
+
   welcome: (user) => send(user.email, `Welcome to ${SITE.name}`,
     `<p>Hi ${esc(user.name || 'there')},</p><p>Thank you for creating an account with ${esc(SITE.name)}. You can now save your favourites, check out faster and track every order from your account.</p>${button(SITE.url, 'Start Shopping')}`),
 

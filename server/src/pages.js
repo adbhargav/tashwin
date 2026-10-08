@@ -50,7 +50,15 @@ async function pageHead(path) {
     if (!o) return { ...home, title: named('Page not found'), status: 404 };
     return { title: o.seo_title || named(o.title), description: o.seo_description || o.subtitle || home.description, image: o.image || home.image };
   }
+  if (section === 'projects' && slug) {
+    const p = await one(`SELECT title, category, location, summary, description, cover_image, images, seo_title, seo_description FROM projects WHERE slug = $1 AND active`, [slug]);
+    if (!p) return { ...home, title: named('Project not found'), status: 404 };
+    return { title: p.seo_title || named(`${p.title} — ${p.category} project${p.location ? ` in ${p.location}` : ''}`), description: p.seo_description || p.summary || p.description || home.description, image: p.cover_image || p.images[0] || home.image, type: 'article' };
+  }
+  if (section === 'projects') return { ...home, title: named('Our Projects'), description: `Offices, homes and showrooms furnished by ${SITE.name}. See our completed projects.` };
   if (section === 'offers') return { ...home, title: named('Furniture Offers & Deals'), description: `Current offers and discounts on sofas, beds, dining and office furniture at ${SITE.name}.` };
+  const policy = { 'privacy-policy': 'Privacy Policy', 'terms-and-conditions': 'Terms & Conditions', 'refund-policy': 'Refund & Return Policy' }[section];
+  if (policy) return { ...home, title: named(policy), description: `${policy} of ${SITE.name}.` };
   if (section === 'support') return { ...home, title: named('Support & Contact') };
   return home;
 }

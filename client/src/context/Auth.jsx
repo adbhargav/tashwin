@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import {
-  GoogleAuthProvider, createUserWithEmailAndPassword, onAuthStateChanged, sendPasswordResetEmail,
+  GoogleAuthProvider, createUserWithEmailAndPassword, onAuthStateChanged,
   signInWithEmailAndPassword, signInWithPopup, signOut,
 } from 'firebase/auth';
 import { auth, firebaseEnabled } from '../lib/firebase';
@@ -51,7 +51,7 @@ export function AuthProvider({ children }) {
     user, loading, firebaseEnabled,
     login: (email, password) => signInWithEmailAndPassword(auth, email, password).catch((e) => { throw friendly(e); }),
     google: () => signInWithPopup(auth, new GoogleAuthProvider()).catch((e) => { throw friendly(e); }),
-    resetPassword: (email) => sendPasswordResetEmail(auth, email).catch((e) => { throw friendly(e); }),
+    resetPassword: (email) => api('/api/auth/forgot', { method: 'POST', body: { email } }),
     async signup(name, email, password) {
       await createUserWithEmailAndPassword(auth, email, password).catch((e) => { throw friendly(e); });
       setUser(await api('/api/me', { method: 'PUT', body: { name } }));

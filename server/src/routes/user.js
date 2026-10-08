@@ -92,7 +92,7 @@ r.get('/me/orders/:id', async (req, res) => {
 });
 
 // Confirms the order once, then emails the customer (with invoice) and the admins.
-async function confirmPaid(order, paymentId, email) {
+export async function confirmPaid(order, paymentId, email) {
   const paid = await markPaid(order.id, paymentId);
   if (paid) { mail.orderConfirmed(paid, email); mail.adminNewOrder(paid, email); }
 }
