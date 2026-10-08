@@ -11,6 +11,7 @@
     "seed:admin": "node src/seed-admin.js",
     "migrate-uploads": "node src/migrate-uploads.js"
   },
+  
   "keywords": [],
   "author": "",
   "license": "ISC",
