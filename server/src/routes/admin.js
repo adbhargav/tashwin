@@ -80,7 +80,7 @@ const TABLES = {
   products: { cols: ['category_id', 'name', 'subtitle', 'slug', 'description', 'price', 'mrp', 'dealer_price', 'images', 'tag', 'material', 'color', 'dimensions', 'care', 'warranty', 'stock', 'featured', 'active', 'seo_title', 'seo_description'], order: 'id DESC', slugFrom: 'name', json: ['images'] },
   offers: { cols: ['title', 'slug', 'subtitle', 'description', 'image', 'banner_image', 'product_ids', 'min_discount', 'category_id', 'sort_order', 'active', 'seo_title', 'seo_description'], order: 'sort_order, id', slugFrom: 'title', json: ['product_ids'] },
   projects: { cols: ['title', 'slug', 'category', 'client', 'location', 'completed_on', 'summary', 'description', 'cover_image', 'images', 'video', 'featured', 'sort_order', 'active', 'seo_title', 'seo_description'], order: 'sort_order, id DESC', slugFrom: 'title', json: ['images'] },
-  banners: { cols: ['placement', 'title', 'subtitle', 'image', 'link', 'sort_order', 'active'], order: 'placement, sort_order, id' },
+  banners: { cols: ['placement', 'title', 'subtitle', 'image', 'video', 'link', 'sort_order', 'active'], order: 'placement, sort_order, id' },
 };
 
 function values(t, body) {

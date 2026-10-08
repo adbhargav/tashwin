@@ -123,6 +123,9 @@ CREATE TABLE IF NOT EXISTS carts (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+-- Hero and gallery banners can play a video instead of (or over) their picture.
+ALTER TABLE banners ADD COLUMN IF NOT EXISTS video TEXT DEFAULT '';
+
 CREATE TABLE IF NOT EXISTS wishlist (
   user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   product_id INT NOT NULL REFERENCES products(id) ON DELETE CASCADE,

@@ -40,6 +40,18 @@ function PromoStrip({ items }) {
   );
 }
 
+// A banner's picture, or its video (uploaded file or YouTube) playing silently on a loop with the picture as the poster.
+const youtubeId = (url) => url?.match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([\w-]{6,})/)?.[1];
+function BannerMedia({ b, className = '', active = true }) {
+  const yt = youtubeId(b.video);
+  if (b.video && yt) {
+    return <iframe title={b.title || 'Video'} src={`https://www.youtube-nocookie.com/embed/${yt}?autoplay=${active ? 1 : 0}&mute=1&loop=1&playlist=${yt}&controls=0&playsinline=1&rel=0&modestbranding=1`}
+      className={`w-full h-full pointer-events-none scale-[1.35] ${className}`} allow="autoplay; encrypted-media" />;
+  }
+  if (b.video) return <video src={asset(b.video)} poster={b.image ? asset(b.image) : undefined} autoPlay muted loop playsInline preload="metadata" className={`w-full h-full object-cover ${className}`} />;
+  return <img src={asset(b.image)} alt={b.title || ''} loading="lazy" className={`w-full h-full object-cover ${className}`} />;
+}
+
 function HeroSlider({ slides }) {
   const [i, setI] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -57,7 +69,7 @@ function HeroSlider({ slides }) {
       {slides.map((s, n) => (
         <Link key={s.id} to={s.link || '/'} inert={n !== i}
           className={`absolute inset-0 transition-opacity duration-700 ${n === i ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-          <img src={asset(s.image)} alt={s.title} className={`w-full h-full object-cover transition-transform duration-[6000ms] ease-out ${n === i ? 'scale-105' : 'scale-100'}`} />
+          <BannerMedia b={s} active={n === i} className={s.video ? '' : `transition-transform duration-[6000ms] ease-out ${n === i ? 'scale-105' : 'scale-100'}`} />
           {s.title && (
             <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/20 to-transparent flex flex-col justify-center px-6 md:px-24 text-white">
               <h2 className="text-3xl md:text-6xl md:leading-[70px] font-medium max-w-2xl">{s.title}</h2>
@@ -167,7 +179,7 @@ export default function Home() {
         <h2 className="heading mb-[25px]">Visit A Tashwin Showroom</h2>
         <div className="grid lg:grid-cols-12 gap-[21px]">
           <div className="lg:col-span-7 overflow-hidden rounded-[5px] bg-soft h-[280px] lg:h-[600px]">
-            {by('gallery')[0] && <img src={asset(by('gallery')[0].image)} alt="Tashwin showroom" loading="lazy" className="w-full h-full object-cover" />}
+            {by('gallery')[0] && <BannerMedia b={by('gallery')[0]} />}
           </div>
           <div className="lg:col-span-5 flex items-center justify-center text-center py-6">
             <div className="max-w-[371px]">
@@ -189,7 +201,7 @@ export default function Home() {
             <Slider itemClass="w-[70%] sm:w-[40%] lg:w-[28.5%]">
               {by('gallery').slice(1).map((g) => (
                 <div key={g.id} className="mx-[10.5px] overflow-hidden bg-soft aspect-square">
-                  <img src={asset(g.image)} alt="" loading="lazy" className="w-full h-full object-cover transition-transform duration-700 hover:scale-105" />
+                  <BannerMedia b={g} className={g.video ? '' : 'transition-transform duration-700 hover:scale-105'} />
                 </div>
               ))}
             </Slider>

@@ -210,11 +210,11 @@ export const CONFIGS = {
 
   banners: {
     resource: 'banners', title: 'Banners', singular: 'Banner', ctxLoad: loadDestinations,
-    help: 'Promo strip: the three text links under the navbar. Hero slider: the big banner at the top of the home page. Gallery: the “Real Life” squares (the first one is also the showroom photo).',
-    defaults: { placement: 'hero', title: '', subtitle: '', image: '', link: '', sort_order: 0, active: true },
+    help: 'Promo strip: the three text links under the navbar. Hero slider: the big banner at the top of the home page. Gallery: the “Real Life” squares (the first one is also the showroom photo). Hero and gallery banners can be a video.',
+    defaults: { placement: 'hero', title: '', subtitle: '', image: '', video: '', link: '', sort_order: 0, active: true },
     columns: [
       { key: 'title', label: 'Banner', nowrap: false, sort: (r) => r.title, render: (r) => <NameCell image={r.image} name={r.title || '—'} sub={r.subtitle} wide /> },
-      { key: 'placement', label: 'Placement', render: (r) => <Pill tone={{ strip: 'blue', hero: 'brand', gallery: 'purple' }[r.placement]}>{{ strip: 'Promo strip', hero: 'Hero slider', gallery: 'Gallery' }[r.placement]}</Pill> },
+      { key: 'placement', label: 'Placement', render: (r) => <>{<Pill tone={{ strip: 'blue', hero: 'brand', gallery: 'purple' }[r.placement]}>{{ strip: 'Promo strip', hero: 'Hero slider', gallery: 'Gallery' }[r.placement]}</Pill>}{r.video && <Pill tone="gray">Video</Pill>}</> },
       { key: 'link', label: 'Opens', nowrap: false, render: (r) => r.link_label || <span className="text-mute">—</span> },
       { key: 'sort_order', label: 'Order', align: 'right' },
     ],
@@ -228,7 +228,8 @@ export const CONFIGS = {
       { key: 'sort_order', label: 'Sort order', type: 'number', half: true },
       { key: 'title', label: 'Title', half: true },
       { key: 'subtitle', label: 'Subtitle', half: true },
-      { key: 'image', label: 'Image', type: 'image', show: (f) => f.placement !== 'strip', size: (f) => IMAGE_SIZES[f.placement === 'gallery' ? 'gallery' : 'hero'] },
+      { key: 'image', label: 'Image', type: 'image', show: (f) => f.placement !== 'strip', size: (f) => IMAGE_SIZES[f.placement === 'gallery' ? 'gallery' : 'hero'], hint: 'With a video, the image shows while the video loads and on slow connections.' },
+      { key: 'video', label: 'Video (optional)', type: 'video', show: (f) => f.placement !== 'strip', hint: 'MP4 or WebM up to 60 MB, or a YouTube link. Plays silently on a loop in place of the image. Keep hero videos short (10–20 s) and under 15 MB so the page loads fast.' },
       { key: 'link', label: 'Where it opens', type: 'select', creatable: true, empty: 'Nowhere (just a picture)', options: destinationOptions, hint: 'Pick a page, or type a full web address for anything else.' },
       { key: 'active', label: 'Active (visible on the website)', type: 'checkbox' },
     ],
