@@ -22,6 +22,9 @@ if ! command -v psql >/dev/null || [ "$(psql -V | grep -oE '[0-9]+' | head -1)" 
   apt-get update -y
   apt-get install -y postgresql-17 postgresql-client-17
 fi
+# The hosted database we copy from may be a newer major version than the local server; pg_dump must be at least as new.
+apt-get install -y postgresql-client-18 >/dev/null 2>&1 || true
+PG_DUMP=$(ls /usr/lib/postgresql/*/bin/pg_dump | sort -V | tail -1)
 systemctl enable --now postgresql
 
 echo "==> Database and user"
@@ -45,7 +48,7 @@ OLD_URL=$(grep -E '^DATABASE_URL=' "$ENV_FILE" | cut -d= -f2- | tr -d '"' || tru
 TABLES=$(psql "$NEW_URL" -tAc "SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public'")
 if [ -n "$OLD_URL" ] && [ "$OLD_URL" != "$NEW_URL" ] && [[ "$OLD_URL" != *127.0.0.1* ]] && [ "$TABLES" = "0" ]; then
   echo "==> Copying all data from the current database into the local one (this can take a minute)"
-  pg_dump "$OLD_URL" --no-owner --no-privileges --no-acl | psql -q -v ON_ERROR_STOP=1 "$NEW_URL"
+  "$PG_DUMP" "$OLD_URL" --no-owner --no-privileges --no-acl | psql -q -v ON_ERROR_STOP=1 "$NEW_URL"
   echo "    copied: $(psql "$NEW_URL" -tAc "SELECT (SELECT count(*) FROM products) || ' products, ' || (SELECT count(*) FROM orders) || ' orders, ' || (SELECT count(*) FROM users) || ' users'")"
 elif [ "$TABLES" != "0" ]; then
   echo "==> Local database already has tables; not copying again."
